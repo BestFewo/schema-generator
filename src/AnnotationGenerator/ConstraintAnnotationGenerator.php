@@ -71,7 +71,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
         }
 
         if ($field['isEnum']) {
-            $assert = sprintf('@Assert\Choice(callback={"%s", "toArray"}', $field['range']);
+            $assert = sprintf('@Assert\Choice(callback={%s::class, "toArray"}', $field['range']);
 
             if ($field['isArray']) {
                 $assert .= ', multiple=true';
