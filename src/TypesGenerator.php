@@ -571,6 +571,8 @@ class TypesGenerator
             case 'DataType':
             case 'Number':
                 return null;
+            case 'Hash':
+                return 'array';
         }
 
         return $classes[$field['range']]['interfaceName'] ?? $classes[$field['range']]['name'];
