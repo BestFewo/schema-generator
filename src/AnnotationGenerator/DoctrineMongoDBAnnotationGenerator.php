@@ -80,6 +80,9 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                 case 'URL':
                     $type = 'string';
                     break;
+                case 'Hash':
+                    $type = 'hash';
+                    break;
             }
         }
 
