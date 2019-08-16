@@ -64,6 +64,10 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
                     $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
                 }
             }
+
+            if (!$asserts && isset($field['range'])){
+                $asserts[] = '@Assert\Valid';
+            }
         }
 
         if (!$field['isNullable']) {
