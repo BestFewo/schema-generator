@@ -60,7 +60,7 @@ final class ConstraintAnnotationGenerator extends AbstractAnnotationGenerator
 
             if (!$asserts && $this->config['validator']['assertType']) {
                 $phpType = $this->toPhpType($field);
-                if (in_array($phpType, ['boolean', 'float', 'integer', 'string'], true)) {
+                if (in_array($phpType, ['boolean', 'bool', 'float', 'integer', 'string'], true)) {
                     $asserts[] = sprintf('@Assert\Type(type="%s")', $phpType);
                 }
             }
