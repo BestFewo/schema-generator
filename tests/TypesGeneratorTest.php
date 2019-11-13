@@ -20,6 +20,7 @@ use ApiPlatform\SchemaGenerator\TypesGeneratorConfiguration;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\NullLogger;
+use Twig\Environment;
 
 /**
  * @author Teoh Han Hui <teohhanhui@gmail.com>
@@ -28,11 +29,11 @@ class TypesGeneratorTest extends TestCase
 {
     public function testGenerate(): void
     {
-        $twigProphecy = $this->prophesize(\Twig_Environment::class);
+        $twigProphecy = $this->prophesize(Environment::class);
         foreach ($this->getClasses() as $class) {
-            $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn()->shouldBeCalled();
+            $twigProphecy->render('class.php.twig', Argument::that($this->getContextMatcher($class)))->willReturn('')->shouldBeCalled();
         }
-        $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn();
+        $twigProphecy->render('class.php.twig', Argument::type('array'))->willReturn('');
         $twig = $twigProphecy->reveal();
 
         $cardinalitiesExtractorProphecy = $this->prophesize(CardinalitiesExtractor::class);
@@ -384,12 +385,7 @@ class TypesGeneratorTest extends TestCase
         ];
     }
 
-    /**
-     * @param array $class
-     *
-     * @return \Closure
-     */
-    private function getContextMatcher(array $class)
+    private function getContextMatcher(array $class): \Closure
     {
         $config = $this->getConfig();
 
