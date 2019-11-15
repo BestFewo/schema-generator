@@ -150,7 +150,7 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
      */
     private function getRelationName(string $range): string
     {
-        $class = $this->classes[$range];
+        $class = $this->classes[$range] ?? ['name' => $range];
 
         return $class[$range]['interfaceName'] ?? $class['name'];
     }
