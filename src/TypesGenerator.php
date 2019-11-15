@@ -574,7 +574,7 @@ class TypesGenerator
                 return 'array';
         }
 
-        return $classes[$field['range']]['interfaceName'] ?? $classes[$field['range']]['name'];
+        return $classes[$field['range']]['interfaceName'] ?? $classes[$field['range']]['name'] ?? $field['range'];
     }
 
     /**
