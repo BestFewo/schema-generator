@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ApiPlatform\SchemaGenerator;
 
 use ApiPlatform\SchemaGenerator\AnnotationGenerator\AnnotationGeneratorInterface;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Inflector\Inflector;
@@ -170,6 +171,7 @@ class TypesGenerator
                 $class['namespace'] = $typeConfig['namespace'] ?? $config['namespaces']['enum'];
                 $class['parent'] = 'Enum';
                 $class['uses'][] = Enum::class;
+                $class['uses'][] = ApiResource::class;
 
                 // Constants
                 foreach ($this->graphs as $graph) {
