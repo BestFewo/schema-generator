@@ -37,7 +37,15 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
         if (isset($this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'])) {
             $inheritanceMapping = $this->config['types'][$class['resource']->localName()]['doctrine']['inheritanceMapping'];
         } else {
-            $inheritanceMapping = $class['abstract'] ? '@MongoDB\MappedSuperclass' : '@MongoDB\Document';
+            $inheritanceMapping = '@MongoDB\Document';
+
+            if ($class['abstract']) {
+                $inheritanceMapping = '@MongoDB\MappedSuperclass';
+            }
+
+            if ($class['embeddable']) {
+                $inheritanceMapping = '@MongoDB\EmbeddedDocument';
+            }
         }
 
         return ['', $inheritanceMapping];
@@ -101,11 +109,23 @@ final class DoctrineMongoDBAnnotationGenerator extends AbstractAnnotationGenerat
                 || CardinalitiesExtractor::CARDINALITY_1_1 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_0 === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_1 === $field['cardinality']) {
-                $annotations[] = sprintf('@MongoDB\ReferenceOne(targetDocument=%s::class, storeAs="id", cascade="persist")', $this->getRelationName($field['range']));
+                if ($field['isEmbedded']) {
+                    $annotations[] = sprintf('@MongoDB\EmbedOne(targetDocument=%s::class)',
+                        $this->getRelationName($field['range']));
+                } else {
+                    $annotations[] = sprintf('@MongoDB\ReferenceOne(targetDocument=%s::class, storeAs="id", cascade="persist")',
+                        $this->getRelationName($field['range']));
+                }
             } elseif (CardinalitiesExtractor::CARDINALITY_0_N === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_1_N === $field['cardinality']
                 || CardinalitiesExtractor::CARDINALITY_N_N === $field['cardinality']) {
-                $annotations[] = sprintf('@MongoDB\ReferenceMany(targetDocument=%s::class, storeAs="id", cascade="persist")', $this->getRelationName($field['range']));
+                if ($field['isEmbedded']) {
+                    $annotations[] = sprintf('@MongoDB\EmbedMany(targetDocument=%s::class)',
+                        $this->getRelationName($field['range']));
+                } else {
+                    $annotations[] = sprintf('@MongoDB\ReferenceMany(targetDocument=%s::class, storeAs="id", cascade="persist")',
+                        $this->getRelationName($field['range']));
+                }
             }
         }
 

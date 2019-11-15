@@ -28,7 +28,7 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
      */
     private $generator;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $graph = new \EasyRdf_Graph();
         $myEnum = new \EasyRdf_Resource('http://schema.org/MyEnum', $graph);
@@ -48,22 +48,34 @@ class ApiPlatformCoreAnnotationGeneratorTest extends TestCase
                     ],
                 ],
                 'MyEnum' => ['resource' => $myEnum],
+                'WithOperations' => [
+                    'resource' => new \EasyRdf_Resource('http://schema.org/WithOperations', $graph),
+                    'operations' => [
+                        'item' => ['get' => ['route_name' => 'api_about_get']],
+                        'collection' => [],
+                    ],
+                ],
             ]
         );
     }
 
-    public function testGenerateClassAnnotations()
+    public function testGenerateClassAnnotations(): void
     {
         $this->assertSame(['@ApiResource(iri="http://schema.org/Res")'], $this->generator->generateClassAnnotations('Res'));
     }
 
-    public function testGenerateFieldAnnotations()
+    public function testGenerateClassAnnotationsWithOperations(): void
+    {
+        $this->assertSame(['@ApiResource(iri="http://schema.org/WithOperations", itemOperations={"get"={"route_name"="api_about_get"}}, collectionOperations={})'], $this->generator->generateClassAnnotations('WithOperations'));
+    }
+
+    public function testGenerateFieldAnnotations(): void
     {
         $this->assertSame(['@ApiProperty(iri="http://schema.org/prop")'], $this->generator->generateFieldAnnotations('Res', 'prop'));
         $this->assertSame([], $this->generator->generateFieldAnnotations('Res', 'customProp'));
     }
 
-    public function testGenerateUses()
+    public function testGenerateUses(): void
     {
         $this->assertSame(['ApiPlatform\Core\Annotation\ApiResource', 'ApiPlatform\Core\Annotation\ApiProperty'], $this->generator->generateUses('Res'));
         $this->assertSame([], $this->generator->generateUses('MyEnum'));

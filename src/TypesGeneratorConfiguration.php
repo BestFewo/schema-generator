@@ -53,8 +53,14 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
     {
         $namespacePrefix = $this->defaultPrefix ?? 'AppBundle\\';
 
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('config');
+        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('config');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('config');
+        }
+
         $rootNode
             ->children()
                 ->arrayNode('rdfa')
@@ -193,7 +199,7 @@ final class TypesGeneratorConfiguration implements ConfigurationInterface
                                         ->booleanNode('nullable')->defaultTrue()->info('Is the property nullable?')->end()
                                         ->booleanNode('unique')->defaultFalse()->info('The property unique')->end()
                                         ->booleanNode('embedded')->defaultFalse()->info('Is the property embedded?')->end()
-                                        ->booleanNode('columnPrefix')->defaultFalse()->info('The property columnPrefix')->end()
+                                        ->scalarNode('columnPrefix')->defaultFalse()->info('The property columnPrefix')->end()
                                     ->end()
                                 ->end()
                             ->end()
