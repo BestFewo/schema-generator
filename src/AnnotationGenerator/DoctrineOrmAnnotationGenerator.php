@@ -245,7 +245,7 @@ final class DoctrineOrmAnnotationGenerator extends AbstractAnnotationGenerator
      */
     private function getRelationName(string $range): string
     {
-        $class = $this->classes[$range];
+        $class = $this->classes[$range] ?? ['name' => $range];
 
         if (isset($class['interfaceName'])) {
             return $class['interfaceName'];
